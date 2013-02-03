@@ -331,9 +331,9 @@ var GameOver = function(){
 			ctx.fillStyle = "Black";
 			//ctx.font = "10pt Arial";
 			ctx.font = 'italic 40px Calibri';
-			ctx.fillText("GAME OVER", width / 2 - 100, height / 2 - 100);
+			ctx.fillText("GAME OVER", width / 2 - 110, height / 2 - 100);
 			ctx.font = 'italic 20px Calibri';
-			ctx.fillText("YOUR RESULT:" + points, width / 2 - 70, height / 2 - 30);
+			ctx.fillText("YOUR RESULT:" + points, width / 2 - 80, height / 2 - 30);
 		}, 100);
 		
 	};

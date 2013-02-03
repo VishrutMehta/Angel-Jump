@@ -1,0 +1,30 @@
+{
+  "version": "0.1",
+  "name": "Angel Jump",
+  "description": "A game where an angel jumps through the blocks and increases its score.",
+  "launch_path": "/index.html",
+  "icons": {
+    "128": "icon-128.png"
+  },
+  "developer": {
+    "name": "Vishrut Mehta",
+    "url": "http://web.iiit.ac.in/~vishrut.mehta/"
+  },
+  "installs_allowed_from": ["*"],
+  "appcache_path": "/cache.manifest",
+  "locales": {
+    "es": {
+      "description": "Su nueva aplicación impresionante Open Web",
+      "developer": {
+        "url": "http://web.iiit.ac.in/~vishrut.mehta/"
+      }
+    },
+    "it": {
+      "description": "Il vostro nuovo fantastico Open Web App",
+      "developer": {
+        "url": "http://web.iiit.ac.in/~vishrut.mehta/"
+      }
+    }
+  },
+  "default_locale": "en"
+}
