@@ -14,7 +14,7 @@ var width = 320,
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------
 //Draw canvas
 
-	var clear = function(){
+var clear = function(){
 	ctx.fillStyle = '#d0e7f9';
 	ctx.clearRect(0, 0, width, height);
 	ctx.beginPath();
@@ -67,18 +67,73 @@ var MoveCircles = function(e){
 //Draw the Angel and to swap the up and down images
 
 var player = new (function(){
-	var that = this;
-	that.image = new Image();
+		var that = this;
+		that.image = new Image();
 
-	that.image.src = "angel.png"
-	that.width = 65;
-	that.height = 95;
-	that.frames = 1;
-	that.actualFrame = 0;
-	that.X = 0;
-	that.Y = 0;	
-	
-	that.setPosition = function(x, y){
+		that.image.src = "angel.png"
+		that.width = 65;
+		that.height = 95;
+		that.frames = 1;
+		that.actualFrame = 0;
+		that.X = 0;
+		that.Y = 0;	
+
+		// Jumping
+
+		that.isJumping = false;
+		that.isFalling = false;
+		that.jumpSpeed = 0;
+		that.fallSpeed = 0;
+
+		that.jump = function() {
+
+			if (!that.isJumping && !that.isFalling) {
+				that.fallSpeed = 0;
+				that.isJumping = true;
+				that.jumpSpeed = 17;
+			}
+		}
+
+		that.checkJump = function() {
+			that.setPosition(that.X, that.Y - that.jumpSpeed);
+			that.jumpSpeed--;
+			if (that.jumpSpeed == 0) {
+				that.isJumping = false;
+				that.isFalling = true;
+				that.fallSpeed = 1;
+			}
+
+		}
+
+
+		that.fallStop = function(){
+			that.isFalling = false;
+			that.fallSpeed = 0;
+			that.jump();	
+		}
+
+		that.checkFall = function(){
+			if (that.Y < height - that.height) {
+				that.setPosition(that.X, that.Y + that.fallSpeed);
+				that.fallSpeed++;
+			} else {
+				that.fallStop();
+			}
+		}
+
+		that.moveLeft = function(){
+			if (that.X > 0) {
+				that.setPosition(that.X - 5, that.Y);
+			}
+		}
+
+		that.moveRight = function(){
+			if (that.X + that.width < width) {
+				that.setPosition(that.X + 5, that.Y);
+			}
+		}
+		// 
+		that.setPosition = function(x, y){
 		that.X = x;
 		that.Y = y;
 	}
@@ -106,13 +161,27 @@ var player = new (function(){
 
 // Done to convert decimal to int
 player.setPosition(~~((width-player.width)/2), ~~((height - player.height)/2));
-	
+player.jump();
+
+document.onmousemove = function(e){
+	if (player.X + c.offsetLeft > e.pageX) {
+		player.moveLeft();
+	} else if (player.X + c.offsetLeft < e.pageX) {
+		player.moveRight();
+	}
+}
+
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------
 // The man game loop
 var GameLoop = function(){
 	clear();
 	MoveCircles(5);
 	DrawCircles();
+
+	if (player.isJumping) 
+		player.checkJump();
+	if (player.isFalling) 
+		player.checkFall();
 	player.draw();
 	gLoop = setTimeout(GameLoop, 1000 / 50);
 }
