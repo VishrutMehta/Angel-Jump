@@ -1,3 +1,7 @@
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------
+//Global Variables
+
 var width = 320, 
 	height = 500,
 	gLoop,
@@ -7,8 +11,10 @@ var width = 320,
 	c.width = width;
 	c.height = height;
 
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------
+//Draw canvas
 
-var clear = function(){
+	var clear = function(){
 	ctx.fillStyle = '#d0e7f9';
 	ctx.clearRect(0, 0, width, height);
 	ctx.beginPath();
@@ -23,6 +29,11 @@ for (var i = 0; i < howManyCircles; i++)
 {
 	circles.push([Math.random() * width, Math.random() * height, Math.random() * 100, Math.random() / 2]);
 }
+
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------
+// To draw the random circles and stor the in an array
+
 var DrawCircles = function(){
 	for (var i = 0; i < howManyCircles; i++) {
 		ctx.fillStyle = 'rgba(255, 255, 255, ' + circles[i][3] + ')';
@@ -32,6 +43,10 @@ var DrawCircles = function(){
 		ctx.fill();
 	}
 };
+
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------
+//  To move the circles from up to down
 
 var MoveCircles = function(e){
 	for (var i = 0; i < howManyCircles; i++) {
@@ -46,11 +61,59 @@ var MoveCircles = function(e){
 		}
 	}
 };
+
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------
+//Draw the Angel and to swap the up and down images
+
+var player = new (function(){
+	var that = this;
+	that.image = new Image();
+
+	that.image.src = "angel.png"
+	that.width = 65;
+	that.height = 95;
+	that.frames = 1;
+	that.actualFrame = 0;
+	that.X = 0;
+	that.Y = 0;	
+	
+	that.setPosition = function(x, y){
+		that.X = x;
+		that.Y = y;
+	}
+	
+	that.interval = 0;
+	that.draw = function(){
+		try {
+			ctx.drawImage(that.image, 0, that.height * that.actualFrame, that.width, that.height, that.X, that.Y, that.width, that.height);
+		} 
+		catch (e) {
+		};
+		
+		if (that.interval == 4 ) {
+			if (that.actualFrame == that.frames) {
+				that.actualFrame = 0;
+			}
+			else {
+				that.actualFrame++;
+			}
+			that.interval = 0;
+		}
+		that.interval++;		
+	}
+})();
+
+// Done to convert decimal to int
+player.setPosition(~~((width-player.width)/2), ~~((height - player.height)/2));
+	
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------
+// The man game loop
 var GameLoop = function(){
 	clear();
 	MoveCircles(5);
 	DrawCircles();
-	
+	player.draw();
 	gLoop = setTimeout(GameLoop, 1000 / 50);
 }
 
