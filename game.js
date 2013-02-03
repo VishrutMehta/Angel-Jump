@@ -47,7 +47,7 @@ var DrawCircles = function(){
 				}
 				};
 
-				//----------------------------------------------------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 				//  To move the circles from up to down
 
@@ -189,6 +189,7 @@ var player = new (function(){
 })();
 
 // Done to convert decimal to int
+
 player.setPosition(~~((width-player.width)/2), height - player.height);
 player.jump();
 
@@ -291,7 +292,7 @@ var checkCollision = function(){
 
 var GameLoop = function(){
 	clear();
-	MoveCircles(5);
+	//MoveCircles(5);
 	DrawCircles();
 
 	if (player.isJumping) player.checkJump();
@@ -321,7 +322,9 @@ var GameLoop = function(){
 }
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 // When game is over
+
 var GameOver = function(){
 		state = false;
 		clearTimeout(gLoop);
