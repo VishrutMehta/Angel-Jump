@@ -1,4 +1,3 @@
-
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------
 //Global Variables
 
@@ -134,29 +133,29 @@ var player = new (function(){
 		}
 		// 
 		that.setPosition = function(x, y){
-		that.X = x;
-		that.Y = y;
-	}
-	
-	that.interval = 0;
-	that.draw = function(){
-		try {
-			ctx.drawImage(that.image, 0, that.height * that.actualFrame, that.width, that.height, that.X, that.Y, that.width, that.height);
-		} 
-		catch (e) {
-		};
-		
-		if (that.interval == 4 ) {
-			if (that.actualFrame == that.frames) {
-				that.actualFrame = 0;
-			}
-			else {
-				that.actualFrame++;
-			}
-			that.interval = 0;
+			that.X = x;
+			that.Y = y;
 		}
-		that.interval++;		
-	}
+
+		that.interval = 0;
+		that.draw = function(){
+			try {
+				ctx.drawImage(that.image, 0, that.height * that.actualFrame, that.width, that.height, that.X, that.Y, that.width, that.height);
+			} 
+			catch (e) {
+			};
+
+			if (that.interval == 4 ) {
+				if (that.actualFrame == that.frames) {
+					that.actualFrame = 0;
+				}
+				else {
+					that.actualFrame++;
+				}
+				that.interval = 0;
+			}
+			that.interval++;		
+		}
 })();
 
 // Done to convert decimal to int
@@ -171,17 +170,94 @@ document.onmousemove = function(e){
 	}
 }
 
+var nrOfPlatforms = 7, 
+    platforms = [],
+    platformWidth = 70,
+    platformHeight = 20;
+
+
+var Platform = function(x, y, type){
+
+	var that=this;
+	that.firstColor = '#FF8C00';
+	that.secondColor = '#EEEE00';
+	that.onCollide = function(){
+		player.fallStop();
+	};
+
+
+	if (type === 1) {
+		that.firstColor = '#AADD00';
+		that.secondColor = '#698B22';
+		that.onCollide = function(){
+			player.fallStop();
+			player.jumpSpeed = 50;
+		};
+	}
+
+
+
+	that.x = ~~ x;
+	that.y = y;
+	that.type = type;
+
+	that.draw = function(){
+		ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+		var gradient = ctx.createRadialGradient(that.x + (platformWidth/2), that.y + (platformHeight/2), 5, that.x + (platformWidth/2), that.y + (platformHeight/2), 45);
+		gradient.addColorStop(0, that.firstColor);
+		gradient.addColorStop(1, that.secondColor);
+		ctx.fillStyle = gradient;
+		ctx.fillRect(that.x, that.y, platformWidth, platformHeight);
+	};
+	return that;
+};
+
+var generatePlatforms = function(){
+	var position = 0, type;
+	for (var i = 0; i < nrOfPlatforms; i++) {
+		type = ~~(Math.random()*5);
+		if (type == 0) 
+			type = 1;
+		else 
+			type = 0;
+		platforms[i] = new Platform(Math.random() * (width - platformWidth), position, type);
+		if (position < height - platformHeight) 
+			position += ~~(height / nrOfPlatforms);
+	}
+}();
+
+var checkCollision = function(){
+	platforms.forEach(function(e, ind){
+			if (
+				(player.isFalling) && 
+				(player.X < e.x + platformWidth) && 
+				(player.X + player.width > e.x) && 
+				(player.Y + player.height > e.y) && 
+				(player.Y + player.height < e.y + platformHeight)
+			   ) {
+			e.onCollide();
+			}
+			})
+}
+
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------
 // The man game loop
 var GameLoop = function(){
 	clear();
-	MoveCircles(5);
+//	MoveCircles(5);
 	DrawCircles();
 
 	if (player.isJumping) 
 		player.checkJump();
 	if (player.isFalling) 
 		player.checkFall();
+
+	platforms.forEach(function(platform){
+			platform.draw();
+	});
+
+	checkCollision();
+
 	player.draw();
 	gLoop = setTimeout(GameLoop, 1000 / 50);
 }
